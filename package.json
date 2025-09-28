@@ -1,8 +1,8 @@
 {
   "name": "kupipodariday-backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Nest API for kupipodariday",
+  "author": "Artur Arutyunov",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
