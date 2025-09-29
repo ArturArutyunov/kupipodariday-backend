@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WishList } from './entities/wishlist.entity';
 import { In, Repository } from 'typeorm';
@@ -38,7 +42,7 @@ export class WishlistsService {
   async findById(id: number): Promise<WishList> {
     return this.wishlistsRepository.findOne({
       where: { id },
-      relations: ['items'],
+      relations: ['items', 'owner'],
     });
   }
 
@@ -55,11 +59,16 @@ export class WishlistsService {
     return await this.wishlistsRepository.save(wishlist);
   }
 
-  async remove(id: number, userId: number): Promise<void> {
+  async remove(id: number, userId: number): Promise<WishList> {
     const wishlist = await this.findById(id);
+    if (!wishlist) {
+      throw new NotFoundException('Не удалось найти вишлист');
+    }
     if (wishlist.owner.id !== userId) {
       throw new ForbiddenException('Нельзя удалить чужой вишлист');
     }
     await this.wishlistsRepository.delete(id);
+
+    return wishlist;
   }
 }

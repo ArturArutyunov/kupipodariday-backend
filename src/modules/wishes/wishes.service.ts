@@ -19,8 +19,10 @@ export class WishesService {
   ) {}
 
   async create(createWishDto: CreateWishDto, user: User): Promise<Wish> {
-    createWishDto.owner = user;
-    const wish = this.wishesRepository.create(createWishDto);
+    const wish = this.wishesRepository.create({
+      owner: user,
+      ...createWishDto,
+    });
     return this.wishesRepository.save(wish);
   }
 
@@ -108,7 +110,6 @@ export class WishesService {
       await queryRunner.release();
       return result;
     } catch (err) {
-      console.log(err);
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       throw new Error('Возникла ошибка при копировании');

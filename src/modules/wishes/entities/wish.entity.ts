@@ -34,6 +34,7 @@ export class Wish {
 
   @Column()
   @IsString()
+  @IsUrl()
   link: string;
 
   @Column()
@@ -71,9 +72,9 @@ export class Wish {
   offers: Offer[];
 
   @ManyToMany(() => WishList, (wishlist) => wishlist.items, {
+    cascade: false,
     eager: true,
   })
-  @JoinTable()
   wishlists: WishList[];
 
   @CreateDateColumn()

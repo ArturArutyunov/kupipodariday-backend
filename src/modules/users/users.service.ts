@@ -18,17 +18,11 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.usersRepository.findOne({
-      where: [
-        { username: createUserDto.username },
-        { email: createUserDto.email },
-      ],
-    });
-    if (existingUser) {
-      throw new ConflictException('Такой пользователь уже существует');
-    }
     const user = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    const { password, ...result } = savedUser;
+
+    return result as User;
   }
 
   async findById(id: number, withRelations = false): Promise<User> {
